@@ -18,7 +18,7 @@ const __dirname = path.resolve();
 dotenv.config();
 const DB_HOST = process.env.DB_HOST; 
 
-const app = express();
+const app = express(); 
 
 // Middlewares   
 app.use(express.json());                      
