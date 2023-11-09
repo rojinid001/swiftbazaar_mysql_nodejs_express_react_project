@@ -61,7 +61,6 @@ const UpdateProduct = () => {
   };
   useEffect(() => {
     getSingleProduct();
-    //eslint-disable-next-line
   }, []);
   //get all category
   const getAllCategory = async () => {
@@ -82,40 +81,61 @@ const UpdateProduct = () => {
 
   //create product function
   const handleUpdate = async (e) => {
-    e.preventDefault();
-    try {
-      const productData = new FormData();
-      productData.append("name", name);
-      productData.append("description", description);
-      productData.append("price", price);
-      productData.append("quantity", quantity);
-      // photo && productData.append("photo", photo);
-      productData.append("category", category);
-      productData.append("sizes", sizes);
+  e.preventDefault();
+  try {
+    const productData = new FormData();
+    productData.append("name", name);
+    productData.append("description", description);
+    productData.append("price", price);
+    productData.append("quantity", quantity);
+    productData.append("category", category);
+    productData.append("sizes", sizes);
 
-      // Append each selected file to the FormData object
-      for (let i = 0; i < photos.length; i++) {
-        productData.append("photo", photos[i]); 
-      }
-
-      console.log("FormData Content:", Object.fromEntries(productData.entries()));   
-
-
-      const { data } = axios.put(
-        `/api/v1/product/update-product/${id}`,
-        productData
-      );
-      if (data?.success) {
-        toast.error(data?.message);
-      } else {
-        toast.success("Product Updated Successfully"); 
-        navigate("/dashboard/admin/products");
-      }
-    } catch (error) { 
-      console.log(error);
-      toast.error("something went wrong");
+    for (let i = 0; i < photos.length; i++) {
+      productData.append("photo", photos[i]); 
     }
-  };
+
+    if (!name.trim()) {
+      toast.error('Name is required');
+      return;
+    }
+    if (!description.trim()) {
+      toast.error('Description is required');
+      return;
+    }
+    if (!price || isNaN(price)) {
+      toast.error('Price must be a number');
+      return;
+    }
+    if (!quantity || isNaN(quantity)) {
+      toast.error('Quantity must be a number');
+      return;
+    }
+    if (!category) {
+      toast.error('Category is required');
+      return;
+    }
+    if (sizes.length === 0) {
+      toast.error('Sizes are required');
+      return;
+    }
+
+    const { data } = axios.put(
+      `/api/v1/product/update-product/${id}`,
+      productData
+    );
+    if (data?.success) {
+      toast.error(data?.message);
+    } else {
+      toast.success("Product Updated Successfully"); 
+      navigate("/dashboard/admin/products");
+    }
+  } catch (error) {
+    console.log(error);
+    toast.error("Something went wrong");
+  }
+};
+
 
   //delete a product
   const handleDelete = async () => {

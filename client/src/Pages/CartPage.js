@@ -4,6 +4,7 @@ import { useCart } from '../Context/Cart';
 import { useAuth } from '../Context/Auth';
 import { useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
+import toast from 'react-hot-toast';
 
 
 import axios from 'axios';
@@ -179,35 +180,40 @@ const CartPage = () => {
 
   // apply coupon  
   const applyCoupon = async () => {
-    try {
-      if (couponCode) {
-        const response = await axios.post('/api/v1/coupon/apply-coupon', {
-          couponCode,
-          cartTotal: getTotalPrice(),
-        });
+  try {
+    if (couponCode) {
+      const response = await axios.post('/api/v1/coupon/apply-coupon', {
+        couponCode,
+        cartTotal: getTotalPrice(),
+      });
 
+      if (response.data && response.data.message === 'Coupon has expired') {
+        toast.error('Coupon has expired or is invalid');
+        setDiscount(0);
+        setNewTotal(0);
+        setCouponApplied(false);
+      } else if (response.data && response.data.data) {
+        console.log("This is response data", response.data.message);
         const appliedDiscount = response.data.data.DiscountAmount;
         const newTotal = response.data.data.newTotal;
 
         setDiscount(appliedDiscount);
-        setNewTotal(newTotal); 
+        setNewTotal(newTotal);
         setCouponApplied(true);
       } else {
         setDiscount(0);
         setNewTotal(0);
-        setCouponApplied(false); 
+        setCouponApplied(false);
       }
-    } catch (error) {
-      console.error('Error applying coupon:', error);
+    } else {
+      setDiscount(0);
+      setNewTotal(0);
+      setCouponApplied(false);
     }
-  };
-
-  //place order fpr cod
-
-  // const placeOrder = () => {
-  //   navigate('/success');
-  // };
-  
+  } catch (error) {
+    console.error('Error applying coupon:', error);
+  }
+};
 
   return (
     <Layout>

@@ -67,5 +67,5 @@ connection.connect((err) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on ${process.env.DEV_MODE} port ${PORT}`.bgCyan.white);                   
+  console.log(`Server is running on ${process.env.DEV_MODE} port ${PORT}`.bgCyan.white);                  
 });   
