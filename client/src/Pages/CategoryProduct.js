@@ -40,7 +40,6 @@ const CategoryProduct = () => {
                       <p className="card-text">{p.description.substring(0,30)}</p>    
                       <p className="card-price">${p.price}</p>
                       <button className="btn btn-secondary ms-1" onClick={()=>navigate(`/product/${p.slug}`)}>More Details</button>
-                      <button className="btn btn-primary ms-1">Add to Cart</button>
                     </div>
                   </div> 
               </div>
